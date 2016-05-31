@@ -1,0 +1,301 @@
+<html lang="en" ng-app="app" class="ng-scope">
+<head>
+    <style type="text/css">
+        @charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,
+        .ng-hide{display:none !important;}
+        ng\:form{display:block;}
+        .ng-animate-start{border-spacing:1px 1px;-ms-zoom:1.0001;}
+        .ng-animate-active{border-spacing:0px 0px;-ms-zoom:1;}
+    </style>
+
+    <title>PokerReply</title>
+    <link href="assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/styles.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/app.css" rel="stylesheet" type="text/css" />
+</head>
+<body><!-- ngView: ng-view -->
+<div id="content">
+    <div id="table-wrap">
+    <div class="modal-wrap ng-hide">
+        <div class="modal">
+            <form>
+                <h1 class="">Sample 6-handed Table</h1>
+                <span class="table-requirements">Max buy-in 400</span>
+                <span class="table-requirements">Min buy-in 80</span>
+                <span class="table-requirements">You have a total of 1000 chips</span>
+                <span class="table-requirements error ng-hide" ></span>
+                <input class="input-left" type="number" required="">
+                <input type="submit" value="Sit in">
+            </form>
+        </div>
+        <div id="curtain" class="ng-hide"></div>
+    </div>
+    <div id="table">
+        <div id="felt"></div>
+    </div>
+    <div class="row">
+        <div class="cell">
+            <a id="to-lobby" class="button" href="/">&lt; Lobby</a>
+        </div>
+        <div class="cell">
+            <div class="player-wrap" player="table.seats[0]" active-seat="" 
+                 dealer-seat="" my-seat="mySeat" my-cards="myCards" 
+                 sitting-on-table=""  notifications="notifications" seat-index="0" 
+                 -number="1">
+                <div class="player-cards">
+                    <div class="card card-back" ></div>
+                    <div class="card card-back" ></div>
+                </div>
+                <div class="seat" >
+                    <a class="sitIn" >Sit In</a>
+                    <div class="player-content ng-hide" >
+                        <div  class="">
+                            <span class=""></span>
+                            <span  class=" ng-hide"></span>
+                            <span  class="">Sitting Out</span>
+                        </div>
+                        <div  class="ng-hide">
+                            <span class="notification "></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="dealer-wrap-1" class="dealer-button ng-hide" >D</div>
+                <div id="bets-1" class="bets">
+                    <span  class=" ng-hide"></span>
+                </div>
+            </div>
+        </div>
+        <div class="cell">
+            <div class="player-wrap " player="" active-seat="" 
+                 dealer-seat="" my-seat="mySeat" my-cards="myCards" 
+                 sitting-on-table="" notifications="notifications" seat-index="1
+                  cell-number="2">
+                <div class="player-cards" >
+                    <div class="card card-back"  ></div>
+                    <div class="card card-back"  ></div>
+                </div>
+                <div class="seat"  >
+                    <a class="sitIn"  >Sit In</a>
+                    <div class="player-content ng-hide" >
+                        <div  class="">
+                            <span class=""></span>
+                            <span  class=" ng-hide"></span>
+                            <span  class="">Sitting Out</span>
+                        </div>
+                        <div  class="ng-hide">
+                            <span class="notification "></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="dealer-wrap-2" class="dealer-button ng-hide" >D</div>
+                <div id="bets-2" class="bets">
+                    <span  class=" ng-hide"></span>
+                </div>
+            </div>
+        </div>
+        <div class="cell"></div>
+    </div>
+    <div class="row">
+        <div class="cell">
+            <div class="side player-wrap" player="" active-seat="table.activeSeat" dealer-seat="table.dealerSeat" my-seat="mySeat" my-cards="myCards" sitting-on-table="$root.sittingOnTable" show-buy-in-modal="showBuyInModal(seat)" notifications="notifications" seat-index="5" cell-number="9">
+    <div class="player-cards" >
+        <div class="card card-back"  ></div>
+        <div class="card card-back"  ></div>
+    </div>
+    <div class="seat"  >
+        <a class="sitIn"  >Sit In</a>
+        <div class="player-content ng-hide" >
+            <div  class="">
+                <span class=""></span>
+                <span  class=" ng-hide"></span>
+                <span  class="">Sitting Out</span>
+            </div>
+            <div  class="ng-hide">
+                <span class="notification "></span>
+            </div>
+        </div>
+    </div>
+    <div id="dealer-wrap-9" class="dealer-button ng-hide" >D</div>
+    <div id="bets-9" class="bets">
+        <span  class=" ng-hide"></span>
+    </div>
+</div>
+        </div>
+        <div class="double-cell">
+            <div id="pot-wrap">
+                <span id="pot"  class=" ng-hide"></span>
+            </div>
+            <div id="board-wrap">
+                <div class="card-container">
+                    <div class="card card- ng-hide" ></div>
+                </div>
+                <div class="card-container">
+                    <div class="card card- ng-hide" ></div>
+                </div>
+                <div class="card-container">
+                    <div class="card card- ng-hide" ></div>
+                </div>
+                <div class="card-container">
+                    <div class="card card- ng-hide" ></div>
+                </div>
+                <div class="card-container">
+                    <div class="card card- ng-hide" ></div>
+                </div>
+            </div>
+        </div>
+        <div class="cell">
+            <div class="side player-wrap" player="" active-seat=""
+                 dealer-seat="" my-seat="" my-cards="" sitting-on-table=""
+                 notifications="notifications" seat-index="2" cell-number="4">
+                <div class="player-cards" >
+                    <div class="card card-back"  ></div>
+                    <div class="card card-back"  ></div>
+                </div>
+                <div class="seat"  >
+                    <a class="sitIn"  >Sit In</a>
+                    <div class="player-content ng-hide" >
+                        <div  class="">
+                            <span class=""></span>
+                            <span  class=" ng-hide"></span>
+                            <span  class="">Sitting Out</span>
+                        </div>
+                        <div  class="ng-hide">
+                            <span class="notification "></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="dealer-wrap-4" class="dealer-button ng-hide" >D</div>
+                <div id="bets-4" class="bets">
+                    <span  class=" ng-hide"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="cell"></div>
+        <div class="cell">
+            <div class="player-wrap " player="" active-seat="" dealer-seat=""
+                 my-seat="mySeat" my-cards="myCards" sitting-on-table=""
+                 notifications="notifications" seat-index="4" cell-number="7">
+                <div class="player-cards" >
+                    <div class="card"  ></div>
+                    <div class="card"  ></div>
+                </div>
+                <div class="seat"  >
+                    <a class="sitIn"  >Sit In</a>
+                    <div class="player-content ng-hide" >
+                        <div  class="">
+                            <span class=""></span>
+                            <span  class=" ng-hide"></span>
+                            <span  class="">Sitting Out</span>
+                        </div>
+                        <div  class="ng-hide">
+                            <span class="notification "></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="dealer-wrap-7" class="dealer-button ng-hide" >D</div>
+                <div id="bets-7" class="bets">
+                    <span  class=" ng-hide"></span>
+                </div>
+            </div>
+        </div>
+        <div class="cell">
+            <div class="player-wrap " player="" active-seat="" dealer-seat=""
+                 my-seat="mySeat" my-cards="myCards" sitting-on-table=""
+                 notifications="notifications" seat-index="3" cell-number="6">
+                <div class="player-cards" >
+                    <div class="card card-back"  ></div>
+                    <div class="card card-back"  ></div>
+                </div>
+                <div class="seat"  >
+                    <a class="sitIn"  >Sit In</a>
+                    <div class="player-content ng-hide" >
+                        <div  class="">
+                            <span class=""></span>
+                            <span  class=" ng-hide"></span>
+                            <span  class="">Sitting Out</span>
+                        </div>
+                        <div  class="ng-hide">
+                            <span class="notification "></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="dealer-wrap-6" class="dealer-button ng-hide" >D</div>
+                <div id="bets-6" class="bets">
+                    <span  class=" ng-hide"></span>
+                </div>
+            </div>
+        </div>
+        <div class="cell"></div>
+    </div>
+    <div class="row controls">
+        <div class="chat-cell">
+            <div id="chat" ng-controller="ChatController" class="ng-scope">
+                <div id="messages">
+                    <p class="log-message">12 sat in</p>
+                    <p class="log-message">12 left</p>
+                    <p class="log-message">12 sat in</p>
+                    <p class="log-message">12 left</p>
+                </div>
+
+            </div>
+        </div>
+        <div class="cell">
+            <button class="control-button ng-hide"  >Fold</button>
+            <button class="control-button ng-hide"  >Sit Out</button>
+            <button class="control-button ng-hide"  >Leave Table</button>
+        </div>
+        <div class="three-cell">
+            <div class="cell-content">
+                <div  class="fa-hover col-md-2 col-sm-3">
+                    <a id="prevhand">
+                        <i class="fa fa-angle-double-left fontsize40"></i>
+                    </a>
+                </div>
+                <div  class="fa-hover col-md-2 col-sm-3">
+                    <a id="prevaction">
+                        <i class="fa fa-arrow-left fontsize40"></i>
+                    </a>
+                </div>
+                <div  class="fa-hover col-md-2 col-sm-2">
+                    <a id="restart">
+                        <i class="fa fa-rotate-right fontsize40"></i>
+                    </a>
+                </div>
+                <div  class="fa-hover col-md-2 col-sm-2">
+                    <a id="nextaction">
+                        <i class="fa fa-arrow-right fontsize40"></i>
+                    </a>
+                </div>
+                <div  class="fa-hover col-md-2 col-sm-2">
+                    <a id="nexthand">
+                        <i class="fa fa-angle-double-right fontsize40"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="audio">
+        <!--<audio id="fold-sound" src="/audio/fold.wav" preload="auto">-->
+        <!--<audio id="check-sound" src="/audio/check.wav" preload="auto">-->
+        <!--<audio id="call-sound" src="/audio/call.wav" preload="auto">-->
+        <!--<audio id="bet-sound" src="/audio/bet.wav" preload="auto">-->
+        <!--<audio id="raise-sound" src="/audio/raise.wav" preload="auto">-->
+    <!--</audio></audio></audio></audio></audio>-->
+    </div>
+</div></div>
+<!--<script type="text/javascript" src="js/app.js"></script>-->
+<!--<script type="text/javascript" src="js/controllers/lobby.js"></script>-->
+<!--<script type="text/javascript" src="js/controllers/table.js"></script>-->
+<!--<script type="text/javascript" src="js/controllers/chat.js"></script>-->
+<!--<script type="text/javascript" src="js/services/sounds.js"></script>-->
+<!--<script type="text/javascript" src="js/directives/seat.js"></script>-->
+<script type="text/javascript" src="assets/js/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="assets/js/jquery-ui-1.10.4.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+</html>
