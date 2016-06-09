@@ -1,2 +1,8 @@
-issue 1. add left side-bar
-issue 2. add read file api
+issue 1. add left side-bar    fixed 
+issue 2. add read file api    fixed
+issue 3. show cards. according to styles.css, use css class .card & .card.card-As - .card.card-back  fixed
+issue 4. support dragging a file to add file fixed
+issue 5. css for all the screen size
+issue 6. after hand switching, should show the ending state of new hand
+
+

@@ -1,6 +1,5 @@
 body {
     margin: 0;
-    background: #2E1F3E;
     font-family: Arial;
     color: #9880e9;
     font-size: 1em
@@ -74,6 +73,7 @@ a {
 }
 
 #content {
+    background: #2E1F3E;
     margin: 0 auto;
     width: 1024px;
     height: 768px
@@ -134,14 +134,14 @@ table {
     box-shadow: 0 0 20px 0 #17541D inset
 }
 
-div.row {
+div.tablerow {
     height: 25%;
     width: 100%;
     position: relative;
     z-index: 2
 }
 
-div.row.controls {
+div.tablerow.controls {
     background-color: #387c41;
     border-radius: 8px;
     z-index: 1
@@ -348,7 +348,7 @@ div#board-wrap .card-container {
 }
 
 .card {
-    background-image: url("/images/deck.png");
+    background-image: url("/assets/images/deck.png");
     background-size: 1040px auto;
     border-radius: 8px 8px 0 0;
     height: 100%;
@@ -709,47 +709,6 @@ div#board-wrap .card-container {
     left: 2%
 }
 
-.modal-wrap {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 100
-}
-
-.modal-wrap .modal {
-    padding: 32px;
-    background-color: #fff;
-    border-radius: 5px;
-    position: relative;
-    margin: 0 auto;
-    top: 18%;
-    width: 440px;
-    z-index: 101
-}
-
-.modal-wrap .modal label {
-    display: block;
-    font-size: large;
-    margin-bottom: 10px
-}
-
-.modal-wrap .modal .input-left {
-    margin-right: 32px;
-    width: 50%
-}
-
-.modal-wrap #curtain {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 2
-}
-
 #developer-info {
     margin-top: 8px;
     font-size: 0.8em
@@ -813,57 +772,48 @@ div#board-wrap .card-container {
         font-size: 1.6em
     }
 
-    div.row.controls .chat-cell {
+    div.tablerow.controls .chat-cell {
         display: none
     }
 
-    div.row.controls .cell {
+    div.tablerow.controls .cell {
         width: 20%
     }
 
-    div.row.controls .cell button {
+    div.tablerow.controls .cell button {
         margin: 15%
     }
 
-    div.row.controls .double-cell {
+    div.tablerow.controls .double-cell {
         width: 40%
     }
 
-    div.row.controls .double-cell .cell-content {
+    div.tablerow.controls .double-cell .cell-content {
         padding: 4% 8%
     }
 
-    div.row.controls .double-cell .cell-content input[type="range"] {
+    div.tablerow.controls .double-cell .cell-content input[type="range"] {
         margin-top: 0
     }
 
-    div.row.controls .double-cell .cell-content #bet-input {
+    div.tablerow.controls .double-cell .cell-content #bet-input {
         margin-top: 5px
     }
 
-    div.row.controls .three-cell {
+    div.tablerow.controls .three-cell {
         width: 60%
     }
 
-    div.row.controls .three-cell .cell-content {
+    div.tablerow.controls .three-cell .cell-content {
         padding: 4% 8%
     }
 
-    div.row.controls .three-cell .cell-content input[type="range"] {
+    div.tablerow.controls .three-cell .cell-content input[type="range"] {
         margin-top: 0
     }
 
-    div.row.controls .three-cell .cell-content #bet-input {
+    div.tablerow.controls .three-cell .cell-content #bet-input {
         margin-top: 5px
-    }
-
-
-    .modal-wrap .modal {
-        width: 300px
-    }
-
-    .modal-wrap .modal .input-left {
-        font-size: 2em
     }
 
     #developer-info {
@@ -921,10 +871,6 @@ div#board-wrap .card-container {
 
     #pot {
         font-size: 1.3em
-    }
-
-    .modal-wrap .modal {
-        width: 320px
     }
 
     #developer-info {

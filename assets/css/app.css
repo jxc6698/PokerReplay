@@ -10,3 +10,19 @@
 .fontsize40 {
     font-size: 40px;
 }
+
+#page-wrapper {
+    background: #2E1F3E;
+}
+
+#inputfilebtn {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.nav > li > span {
+    color: #a7b1c2;
+    font-weight: 600;
+    padding: 14px 20px 14px 25px;
+}
