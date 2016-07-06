@@ -65,7 +65,18 @@
                     </ul>
                 </li>
 
+
                 <li id="blankItem"><a href="#"></a></li>
+                <li id="filelisttemplate" class="hide">
+                    <a href="#">
+                        <i class="fa fa-th-large"></i>
+                        <div poker-filename="" class="nav-label pokerfilename">Dashboards</div>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <!--<li poker-template="handitem" poker-handid=''><a >Dashboard v.1</a></li>-->
+                    </ul>
+                </li>
             </ul>
         </div>
     </nav>
@@ -333,8 +344,12 @@
 
 <div id="pokertemplate" style="display: none;">
 
-    <li poker-template="siderbar" poker-filename="">
-        <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboards</span> <span class="fa arrow"></span></a>
+    <li poker-template="siderbar">
+        <a href="#">
+            <i class="fa fa-th-large"></i>
+            <div poker-filename="" class="nav-label pokerfilename">Dashboards</div>
+            <span class="fa arrow"></span>
+        </a>
         <ul class="nav nav-second-level">
         </ul>
     </li>

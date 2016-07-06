@@ -7,5 +7,6 @@ issue 6. after hand switching, should show the ending state of new hand
 issue 7. enter a new round, the bet number should be cleared and pot number should include all the bet money
 issue 8. support search a special hand
 issue 9. add a checkbox list to support show everyone's card, freely
+issue 10. when one player folds, should hide its card icon              fixed
 
 

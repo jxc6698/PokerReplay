@@ -26,3 +26,12 @@
     font-weight: 600;
     padding: 14px 20px 14px 25px;
 }
+
+.pokerfilename {
+    max-width:120px;
+
+    display:inline-block;/*内联对象需加*/
+    /*width:100px;*/
+    word-break:keep-all;/* 不换行 */
+    white-space:nowrap;/* 不换行 */
+}

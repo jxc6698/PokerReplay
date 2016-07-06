@@ -5,7 +5,6 @@ var fs = require("fs");
 
 
 
-
 $(function() {
     $("#prevhand").on("click", function(e) {
         handManager.prevHand();

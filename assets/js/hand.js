@@ -91,11 +91,11 @@ var handManager = (function() {
 
 
     function readfilelist(filelist) {
-        for (var filename in filelist) {
-            var data = fs.readFileSync(filelist[filename], "utf-8");
+        for (var index in filelist) {
+            var data = fs.readFileSync(filelist[index], "utf-8");
             var handlist = dataHandler(data);
             //addFileToList(filelist[filename]);
-            addHandlist(handlist);
+            addHandlist(filelist[index], handlist);
         }
 
     }
@@ -148,8 +148,12 @@ var handManager = (function() {
             },
             process: [],
             currentIndex: 0,
-            pot: 0,
-            money: {}
+
+            /* current state */
+            foldflag: {},  /* "UTG": true means UTG has folded */
+            allroles: [],  /* just now unset */
+            pot: 0,        /* current pot number */
+            money: {}      /* current everyone's money */
         };
         TotalHands[hand.id] = hand;
 
@@ -385,6 +389,10 @@ var handManager = (function() {
             .text("$"+num);
     }
 
+    function updateFold(seatn) {
+        $(".player-wrap[active-seat='"+seatn+"'] .player-cards").addClass("hide");
+    }
+
     function win(seatn, num) {
         num = moneyFormat(num);
         for (var index=1;index<=6;index++) {
@@ -611,7 +619,6 @@ var handManager = (function() {
                 updateBetMoney(hand.initState.people["Small Blind"], hand.SB);
                 updateBetMoney(hand.initState.people["Big Blind"], hand.BB);
                 updatePot(tmpState.pot);
-                console.log(tmpState.pot)
                 break;
             case "raise":
                 var m = hand.initState.money[hand.initState.seat[stepItem.place]]
@@ -623,6 +630,9 @@ var handManager = (function() {
                 updatePot(tmpState.pot);
                 break;
             case "fold":
+                hand.foldflag[hand.initState.seat[stepItem.place]] = true;
+
+                updateFold(stepItem.place);
                 updateBetMoney(stepItem.place, 0);
                 break;
             case "return":
