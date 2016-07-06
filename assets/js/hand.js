@@ -73,7 +73,8 @@
 
 var handManager = (function() {
     /**
-     *  IdMap:   hand id => hand object
+     *  IdMap:   hand id => hand object index in TotalHands
+     *  TotalHands:  hand object list
      */
     var TotalHands = [];
     var IdMap = {};
@@ -111,7 +112,7 @@ var handManager = (function() {
 
             handlist.push(hand.id);
 
-            break;
+            if (i==1) break;
         }
 
         return handlist;
@@ -477,7 +478,7 @@ var handManager = (function() {
     function hidediv($div) {
         var class1 = $div[0].classList;
         for (var i=0;i<class1.length; i++) {
-            if (class1[i].length > 5) {
+            if (class1[i].length > 5) {  /*  remove card-xx class */
                 $div.removeClass(class1[i]);
             }
         }
@@ -490,8 +491,15 @@ var handManager = (function() {
         });
     }
 
+    function hidePlayerCards() {
+        $(".player-wrap[active-seat] .player-cards div").each(function(index, obj) {
+            hidediv($(obj));
+        });
+    }
+
     function clearAll() {
         hidePublicCards();
+        hidePlayerCards();
     }
 
 
@@ -563,6 +571,7 @@ var handManager = (function() {
                 step.e = moneyFormat(hand.money[subject]);
 
                 break;
+            case "Does":  /* Does not show [xx xx] */
             case "Showdown":
                 /* do nothing */
 
@@ -596,11 +605,15 @@ var handManager = (function() {
         hand.process.push(step);
     }
 
+    function initCardState() {
+        $(".player-wrap[active-seat] .player-cards").removeClass("hide");
+    }
 
 
     function processParse(stepItem, hand) {
         switch (stepItem.cmd) {
             case "init":
+                clearAll();
                 tmpState = {pot: 0};
 
                 tmpState.money = $.extend({}, hand.initState.money);
@@ -610,6 +623,7 @@ var handManager = (function() {
                     tmpState.money["Small Blind"] -= hand.SB;
                     tmpState.pot += hand.SB;
                 }
+                initCardState();
                 setPlayerName();
                 setHero(hand.initState.people[hand.myseat]);
                 setDealer(hand.Dealer);
@@ -733,6 +747,17 @@ var handManager = (function() {
         return false;
     }
 
+    function openHand(id) {
+        var index = IdMap[id];
+        if (typeof index === "undefined") {
+            return
+        }
+
+        handindex = index;
+
+        restart();
+    }
+
     return {
         readfilelist: readfilelist,
         nextHand: nextHand,
@@ -740,7 +765,8 @@ var handManager = (function() {
         iterateNextStep: iterateNextStep,
         iteratePrevStep: iteratePrevStep,
         restart: restart,
-        search: search
+        search: search,
+        openHand: openHand
     }
 
 })();

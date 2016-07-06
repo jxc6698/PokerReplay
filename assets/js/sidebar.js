@@ -15,6 +15,11 @@ function searchHand(str) {
     handManager.search(str);
 }
 
+/**
+ *
+ * @param filename
+ * @param handlist    list of hand's id
+ */
 function addHandlist(filename, handlist) {
     //var $list = $("#pokertemplate [poker-template='siderbar']").clone(true);
     var $list = $("#filelisttemplate").clone(true);
@@ -24,6 +29,13 @@ function addHandlist(filename, handlist) {
     for (var index in handlist) {
         var $item = $("#pokertemplate [poker-template='handitem']").clone(true);
         $list.find('> ul').append($item);
+        $item.attr("handid", handlist[index]);
+        $item.find("> a").text(handlist[index]);
+        $item.on('click', function(e) {
+            console.log($(this).attr('handid'));
+            handManager.openHand($(this).attr('handid'));
+        });
+        $('#side-menu').metisMenu();
     }
     $("#blankItem").before($list);
 }
