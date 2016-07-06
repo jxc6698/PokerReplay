@@ -21,8 +21,7 @@ function searchHand(str) {
  * @param handlist    list of hand's id
  */
 function addHandlist(filename, handlist) {
-    //var $list = $("#pokertemplate [poker-template='siderbar']").clone(true);
-    var $list = $("#filelisttemplate").clone(true);
+    var $list = $("#pokertemplate [poker-template='siderbar']").clone(true);
     $list.removeClass("hide").removeAttr('id');
     filename = path.basename(filename);
     $list.find('[poker-filename]').text(filename.substr(0,5));
@@ -35,8 +34,8 @@ function addHandlist(filename, handlist) {
             console.log($(this).attr('handid'));
             handManager.openHand($(this).attr('handid'));
         });
-        $('#side-menu').metisMenu();
     }
     $("#blankItem").before($list);
+    $('#side-menu').metisMenu();
 }
 
