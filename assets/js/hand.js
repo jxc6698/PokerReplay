@@ -40,15 +40,18 @@
  *      cmd: "flop",
  *      card1: "",
  *      card2: "",
- *      card3: ""
+ *      card3: "",
+ *      money: {}
  *  }
  *  {
  *      cmd: "turn",
- *      card4: ""
+ *      card4: "",
+ *      money: {}
  *  }
  *  {
  *      cmd: "river",
- *      card5: ""
+ *      card5: "",
+ *      money: {}
  *  }
  *  {
  *      cmd: "init"
@@ -151,10 +154,11 @@ var handManager = (function() {
             currentIndex: 0,
 
             /* current state */
-            foldflag: {},  /* "UTG": true means UTG has folded */
-            allroles: [],  /* just now unset */
-            pot: 0,        /* current pot number */
-            money: {}      /* current everyone's money */
+            foldflag: {},   /* "UTG": true means UTG has folded */
+            allroles: [],   /* just now unset */
+            pot: 0,         /* current pot number */
+            money: {},      /* current everyone's money */
+            betmoney: {}    /* current bet money */
         };
         TotalHands[hand.id] = hand;
 
@@ -170,6 +174,7 @@ var handManager = (function() {
                 var m = parseFloat((RegexSet.moneyRegex.exec(line))[1]);
                 initState.symbol = "$";
                 initState.money[subject] = m;
+                hand.allroles.push(subject);
 
                 if (line.indexOf("[ME]") >= 0) {
                     hand.myseat = subject;
@@ -181,14 +186,12 @@ var handManager = (function() {
 
             } else if (line.substring(0,6) === "Dealer") {
                 var ret = / Set dealer \[(\d)\]/ig.exec(line);
-                /* get Dealer's seat */
+                /* get Dealer's seat (alreay get in seat row) */
                 var seatnum = ret[1];
-
             } else if (line.substring(0,5) === "Small") {
                 var ret = / Small Blind \$([0-9\.]{1,10})/ig.exec(line);
                 var money = ret[1];
                 hand.SB = parseFloat(money);
-
 
             } else if (line.substring(0,3) === "Big") {
                 var ret = / Big blind \$([0-9\.]{1,10})/ig.exec(line);
@@ -215,7 +218,7 @@ var handManager = (function() {
         updateBetMoney(hand.initState.people["Small Blind"], hand.SB);
         updateBetMoney(hand.initState.people["Big Blind"], hand.BB);
 
-        hand.process.push({cmd:"init"})
+        hand.process.push({cmd:"init"});
 
         if (lines[index].indexOf("HOLE CARDS") >= 0) {
             index ++;
@@ -249,7 +252,11 @@ var handManager = (function() {
             var step = {};
             step.cmd = "flop";
             step.card1 = cards[1], step.card2 = cards[2], step.card3 = cards[3];
+            step.money = $.extend({}, hand.betmoney);
             hand.process.push(step);
+            for (var nn in hand.betmoney) {
+                hand.betmoney[nn] = 0;
+            }
             index ++;
         }
 
@@ -277,7 +284,11 @@ var handManager = (function() {
             var step = {};
             step.cmd = "turn";
             step.card4 = cards[1];
+            step.money = $.extend({}, hand.betmoney);
             hand.process.push(step);
+            for (var nn in hand.betmoney) {
+                hand.betmoney[nn] = 0;
+            }
             index ++;
         }
 
@@ -304,7 +315,11 @@ var handManager = (function() {
             var step = {};
             step.cmd = "river";
             step.card5 = cards[1];
+            step.money = $.extend({}, hand.betmoney);
             hand.process.push(step);
+            for (var nn in hand.betmoney) {
+                hand.betmoney[nn] = 0;
+            }
             index ++;
         }
 
@@ -497,9 +512,16 @@ var handManager = (function() {
         });
     }
 
+    function zeroBetMoney() {
+        for (var i=1;i<=6;i++) {
+            updateBetMoney(i, 0);
+        }
+    }
+
     function clearAll() {
         hidePublicCards();
         hidePlayerCards();
+        zeroBetMoney();
     }
 
 
@@ -637,7 +659,7 @@ var handManager = (function() {
             case "raise":
                 var m = hand.initState.money[hand.initState.seat[stepItem.place]]
                     - stepItem.e;
-                tmpState.pot += (stepItem.e - stepItem.s);
+                tmpState.pot += (stepItem.s - stepItem.e);
 
                 updateBetMoney(stepItem.place, m);
                 updateMoney(stepItem.place, stepItem.e);
@@ -674,14 +696,17 @@ var handManager = (function() {
 
             case "flop":
                 showflop(stepItem);
+                zeroBetMoney();
                 break;
 
             case "turn":
                 showturn(stepItem);
+                zeroBetMoney();
                 break;
 
             case "river":
                 showriver(stepItem);
+                zeroBetMoney();
                 break;
 
             default:
