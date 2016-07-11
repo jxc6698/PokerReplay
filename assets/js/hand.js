@@ -815,7 +815,6 @@ var handManager = (function() {
                 updatePot(tmpState.pot);
                 break;
             case "fold":
-                hand.foldflag[hand.initState.seat[stepItem.place]] = false;
 
                 updateUnfold(stepItem.place);
                 updateBetMoney(stepItem.place, stepItem.s);
