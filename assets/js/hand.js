@@ -10,6 +10,7 @@
  *      cmd: "raise",
  *      s:   start money,
  *      e:   end money,
+ *      bs:   bet money start money,
  *      place: 1
  *  }
  *  {
@@ -34,7 +35,7 @@
  *  {
  *      cmd: "showdown",
  *      place:  1,
- *      money:  1.0
+ *      money:  1.0     // current bet money
  *  }
  *  {
  *      cmd: "flop",
@@ -586,8 +587,11 @@ var handManager = (function() {
                 var newm = parseFloat(RegexSet.moneyRegex.exec(parts[2])[1]);
                 var m = parseFloat(RegexSet.moneyRegex.exec(parts[4])[1]);
 
+                step.bs = hand.betmoney[subject];
+
                 hand.money[subject] -= newm;
                 hand.betmoney[subject] += newm;
+
 
                 step.cmd = "raise";
                 step.place = hand.initState.people[subject];
@@ -603,6 +607,8 @@ var handManager = (function() {
                 break;
             case "Calls":
                 var m = parseFloat(RegexSet.moneyRegex.exec(parts[2])[1]);
+                step.bs = hand.betmoney[subject];
+
                 hand.money[subject] -= m;
                 hand.betmoney[subject] += m;
 
@@ -619,6 +625,8 @@ var handManager = (function() {
                 break;
             case "Bets":
                 var m = parseFloat(RegexSet.moneyRegex.exec(parts[2])[1]);
+                step.bs = hand.betmoney[subject];
+
                 hand.money[subject] -= m;
                 hand.betmoney[subject] += m;
 
@@ -630,6 +638,7 @@ var handManager = (function() {
                 break;
             case "All-in":
                 var m = parseFloat(RegexSet.moneyRegex.exec(parts[2])[1]);
+                step.bs = hand.betmoney[subject];
                 hand.money[subject] -= m;
                 hand.betmoney[subject] += m;
 
@@ -642,7 +651,6 @@ var handManager = (function() {
             case "Return":
                 var m = parseFloat(RegexSet.moneyRegex.exec(parts[6])[1]);
                 hand.money[subject] += m;
-                hand.money[subject] -= m;
 
                 step.cmd = "return";
                 step.place = hand.initState.people[subject];
@@ -656,7 +664,7 @@ var handManager = (function() {
 
                 step.cmd = "showdown";
                 step.place = hand.initState.people[subject];
-                step.s = hand.initState.money[subject] - hand.money[subject];
+                step.s = hand.betmoney[subject];
 
                 hand.endState.loserlist.push(step.place);
 
@@ -730,10 +738,10 @@ var handManager = (function() {
                 updateBetMoney(stepItem.place, 0);
                 break;
             case "return":
-                tmpState.money[hand.initState.seat[stepItem.place]] = stepItem.s;
+                tmpState.money[hand.initState.seat[stepItem.place]] = stepItem.e;
                 var m = hand.initState.money[hand.initState.seat[stepItem.place]]
-                    - stepItem.s;
-                tmpState.pot += (stepItem.e - stepItem.s);
+                    - stepItem.e;
+                tmpState.pot -= (stepItem.e - stepItem.s);
 
                 updateBetMoney(stepItem.place, m);
                 updateMoney(stepItem.place,
@@ -800,12 +808,10 @@ var handManager = (function() {
                 updatePot(tmpState.pot);
                 break;
             case "raise":
-                var m = hand.initState.money[hand.initState.seat[stepItem.place]]
-                    - stepItem.s;
                 tmpState.pot -= (stepItem.s - stepItem.e);
 
-                updateBetMoney(stepItem.place, m);
-                updateMoney(stepItem.place, stepItem.e);
+                updateBetMoney(stepItem.place, stepItem.bs);
+                updateMoney(stepItem.place, stepItem.s);
                 updatePot(tmpState.pot);
                 break;
             case "fold":
@@ -876,6 +882,8 @@ var handManager = (function() {
 
         hand.currentIndex --;
         processReverseParse(hand.process[hand.currentIndex], hand);
+        if (hand.currentIndex>2)  /** 0: stand for "init", has no place field */
+            turnToplayer(hand.process[hand.currentIndex-1].place);
     }
 
     function nextHand() {
