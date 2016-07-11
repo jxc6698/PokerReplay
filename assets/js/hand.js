@@ -154,7 +154,7 @@ var handManager = (function() {
             currentIndex: 0,
 
             /* current state */
-            foldflag: {},   /* "UTG": true means UTG has folded */
+            foldflag: {},   /* "UTG": true means UTG has folded   not used */
             allroles: [],   /* just now unset */
             pot: 0,         /* current pot number */
             money: {},      /* current everyone's money */
@@ -205,18 +205,12 @@ var handManager = (function() {
         hand.money = $.extend({}, hand.initState.money);
         hand.money["Big Blind"] -= hand.BB;
         hand.pot += hand.BB;
+        hand.betmoney["Big Blind"] = hand.BB;
         if ("Small Blind" in hand.initState.money) {
             hand.money["Small Blind"] -= hand.SB;
             hand.pot += hand.SB;
+            hand.betmoney["Small Blind"] = hand.SB;
         }
-        setPlayerName();
-        setHero(hand.initState.people[hand.myseat]);
-        setDealer(hand.Dealer);
-        showEveryOneMoney(hand);
-        updateMoney(hand.initState.people["Small Blind"], hand.money["Small Blind"]);
-        updateMoney(hand.initState.people["Big Blind"], hand.money["Big Blind"]);
-        updateBetMoney(hand.initState.people["Small Blind"], hand.SB);
-        updateBetMoney(hand.initState.people["Big Blind"], hand.BB);
 
         hand.process.push({cmd:"init"});
 
@@ -344,6 +338,9 @@ var handManager = (function() {
 
         delete(hand["pot"]);
         delete(hand["money"]);
+        delete(hand["foldflag"]);
+        delete(hand["allroles"]);
+        delete(hand["betmoney"]);
 
         return hand;
     }
@@ -408,16 +405,27 @@ var handManager = (function() {
     function updateFold(seatn) {
         $(".player-wrap[active-seat='"+seatn+"'] .player-cards").addClass("hide");
     }
+    function updateUnfold(seatn) {
+        $(".player-wrap[active-seat='"+seatn+"'] .player-cards").removeClass("hide");
+    }
 
     function win(seatn, num) {
         num = moneyFormat(num);
-        for (var index=1;index<=6;index++) {
-            $(".player-wrap[active-seat='"+index+"'] .bets span")
-                .addClass("ng-hide");
-        }
+        //for (var index=1;index<=6;index++) {
+        //    $(".player-wrap[active-seat='"+index+"'] .bets span")
+        //        .addClass("ng-hide");
+        //}
         $(".player-wrap[active-seat='"+seatn+"'] .bets span")
             .removeClass("ng-hide")
             .text("$"+num);
+    }
+
+    /** num:  pot size
+     *  list  loser list
+     */
+    function unWin(seatn, num, list) {
+        $(".player-wrap[active-seat='"+seatn+"'] .bets span")
+            .addClass("ng-hide");
     }
 
     function setDealer(seatn) {
@@ -446,9 +454,9 @@ var handManager = (function() {
         }
     }
 
-    function showEveryOneMoney(hand) {
-        for (var place in hand.money) {
-            updateMoney(hand.initState.people[place], hand.money[place]);
+    function showEveryOneMoney(hand, tmpState) {
+        for (var place in tmpState.money) {
+            updateMoney(hand.initState.people[place], tmpState.money[place]);
         }
     }
 
@@ -456,6 +464,11 @@ var handManager = (function() {
         var $cdiv = $(".player-wrap[active-seat='"+seatn+"'] .player-cards div.card");
         showdowndiv($cdiv.eq(0), cards[1]);
         showdowndiv($cdiv.eq(1), cards[2]);
+    }
+    function unShowdown(seatn, cards) {
+        var $cdiv = $(".player-wrap[active-seat='"+seatn+"'] .player-cards div.card");
+        unShowdowndiv($cdiv.eq(0), cards[1]);
+        unShowdowndiv($cdiv.eq(1), cards[2]);
     }
 
     function showdowndiv($div, card) {
@@ -466,6 +479,16 @@ var handManager = (function() {
             }
         }
         $div.addClass("card-"+card);
+    }
+
+    function unShowdowndiv($div) {
+        var class1 = $div[0].classList;
+        for (var i=0;i<class1.length; i++) {
+            if (class1[i].length > 5) {
+                $div.removeClass(class1[i]);
+            }
+        }
+        $div.addClass("card-back");
     }
 
     function showflop(stepItem) {
@@ -489,6 +512,29 @@ var handManager = (function() {
 
         showdowndiv($div5, stepItem.card5);
     }
+
+    function unShowflop(stepItem) {
+        var $div1 = $("#board-wrap div div").eq(0).removeClass("ng-hide");
+        var $div2 = $("#board-wrap div div").eq(1).removeClass("ng-hide");
+        var $div3 = $("#board-wrap div div").eq(2).removeClass("ng-hide");
+
+        unShowdowndiv($div1, stepItem.card1);
+        unShowdowndiv($div2, stepItem.card2);
+        unShowdowndiv($div3, stepItem.card3);
+    }
+
+    function unShowturn(stepItem) {
+        var $div4 = $("#board-wrap div div").eq(3).removeClass("ng-hide");
+
+        unShowdowndiv($div4, stepItem.card4);
+    }
+
+    function unShowriver(stepItem) {
+        var $div5 = $("#board-wrap div div").eq(4).removeClass("ng-hide");
+
+        unShowdowndiv($div5, stepItem.card5);
+    }
+
 
     function hidediv($div) {
         var class1 = $div[0].classList;
@@ -517,6 +563,11 @@ var handManager = (function() {
             updateBetMoney(i, 0);
         }
     }
+    function recoveryBetMoney(betmoney, people) {
+        for (var role in betmoney) {
+            updateBetMoney(people[role], betmoney[role]);
+        }
+    }
 
     function clearAll() {
         hidePublicCards();
@@ -536,6 +587,7 @@ var handManager = (function() {
                 var m = parseFloat(RegexSet.moneyRegex.exec(parts[4])[1]);
 
                 hand.money[subject] -= newm;
+                hand.betmoney[subject] += newm;
 
                 step.cmd = "raise";
                 step.place = hand.initState.people[subject];
@@ -544,13 +596,15 @@ var handManager = (function() {
 
                 break;
             case "Folds":
-
+                hand.betmoney[subject] = 0;
                 step.cmd = "fold";
                 step.place = hand.initState.people[subject];
+                step.s = hand.initState.money[subject] - hand.money[subject];
                 break;
             case "Calls":
                 var m = parseFloat(RegexSet.moneyRegex.exec(parts[2])[1]);
                 hand.money[subject] -= m;
+                hand.betmoney[subject] += m;
 
                 step.cmd = "raise";
                 step.place = hand.initState.people[subject];
@@ -566,6 +620,7 @@ var handManager = (function() {
             case "Bets":
                 var m = parseFloat(RegexSet.moneyRegex.exec(parts[2])[1]);
                 hand.money[subject] -= m;
+                hand.betmoney[subject] += m;
 
                 step.cmd = "raise";
                 step.place = hand.initState.people[subject];
@@ -576,6 +631,7 @@ var handManager = (function() {
             case "All-in":
                 var m = parseFloat(RegexSet.moneyRegex.exec(parts[2])[1]);
                 hand.money[subject] -= m;
+                hand.betmoney[subject] += m;
 
                 step.cmd = "raise";
                 step.place = hand.initState.people[subject];
@@ -586,6 +642,7 @@ var handManager = (function() {
             case "Return":
                 var m = parseFloat(RegexSet.moneyRegex.exec(parts[6])[1]);
                 hand.money[subject] += m;
+                hand.money[subject] -= m;
 
                 step.cmd = "return";
                 step.place = hand.initState.people[subject];
@@ -599,6 +656,7 @@ var handManager = (function() {
 
                 step.cmd = "showdown";
                 step.place = hand.initState.people[subject];
+                step.s = hand.initState.money[subject] - hand.money[subject];
 
                 hand.endState.loserlist.push(step.place);
 
@@ -609,6 +667,7 @@ var handManager = (function() {
                 step.cmd = "hand";
                 step.place = hand.initState.people[subject];
                 step.money = moneyFormat(m);
+                step.roles = [];
 
                 hand.endState.winner = step.place;
                 hand.endState.pot = m;
@@ -649,7 +708,7 @@ var handManager = (function() {
                 setPlayerName();
                 setHero(hand.initState.people[hand.myseat]);
                 setDealer(hand.Dealer);
-                showEveryOneMoney(hand);
+                showEveryOneMoney(hand, tmpState);
                 updateMoney(hand.initState.people["Small Blind"], tmpState.money["Small Blind"]);
                 updateMoney(hand.initState.people["Big Blind"], tmpState.money["Big Blind"]);
                 updateBetMoney(hand.initState.people["Small Blind"], hand.SB);
@@ -666,17 +725,15 @@ var handManager = (function() {
                 updatePot(tmpState.pot);
                 break;
             case "fold":
-                hand.foldflag[hand.initState.seat[stepItem.place]] = true;
 
                 updateFold(stepItem.place);
                 updateBetMoney(stepItem.place, 0);
                 break;
             case "return":
-
-                tmpState.money[hand.initState.seat[stepItem.place]] = stepItem.e;
+                tmpState.money[hand.initState.seat[stepItem.place]] = stepItem.s;
                 var m = hand.initState.money[hand.initState.seat[stepItem.place]]
-                    - stepItem.e;
-                tmpState.pot -= (stepItem.e - stepItem.s);
+                    - stepItem.s;
+                tmpState.pot += (stepItem.e - stepItem.s);
 
                 updateBetMoney(stepItem.place, m);
                 updateMoney(stepItem.place,
@@ -690,6 +747,7 @@ var handManager = (function() {
                 break;
 
             case "showdown":
+                updateBetMoney(stepItem.place, 0);
                 showdown(stepItem.place,
                     hand.initState.cards[hand.initState.seat[stepItem.place]]);
                 break;
@@ -717,8 +775,88 @@ var handManager = (function() {
     }
 
 
-    function processReverseParse() {
-        ;
+    function processReverseParse(stepItem, hand) {
+        switch (stepItem.cmd) {
+            case "init":
+                clearAll();
+                tmpState = {pot: 0};
+
+                tmpState.money = $.extend({}, hand.initState.money);
+                tmpState.money["Big Blind"] -= hand.BB;
+                tmpState.pot += hand.BB;
+                if ("Small Blind" in hand.initState.money) {
+                    tmpState.money["Small Blind"] -= hand.SB;
+                    tmpState.pot += hand.SB;
+                }
+                initCardState();
+                setPlayerName();
+                setHero(hand.initState.people[hand.myseat]);
+                setDealer(hand.Dealer);
+                showEveryOneMoney(hand);
+                updateMoney(hand.initState.people["Small Blind"], tmpState.money["Small Blind"]);
+                updateMoney(hand.initState.people["Big Blind"], tmpState.money["Big Blind"]);
+                updateBetMoney(hand.initState.people["Small Blind"], hand.SB);
+                updateBetMoney(hand.initState.people["Big Blind"], hand.BB);
+                updatePot(tmpState.pot);
+                break;
+            case "raise":
+                var m = hand.initState.money[hand.initState.seat[stepItem.place]]
+                    - stepItem.s;
+                tmpState.pot -= (stepItem.s - stepItem.e);
+
+                updateBetMoney(stepItem.place, m);
+                updateMoney(stepItem.place, stepItem.e);
+                updatePot(tmpState.pot);
+                break;
+            case "fold":
+                hand.foldflag[hand.initState.seat[stepItem.place]] = false;
+
+                updateUnfold(stepItem.place);
+                updateBetMoney(stepItem.place, stepItem.s);
+                break;
+            case "return":
+
+                tmpState.money[hand.initState.seat[stepItem.place]] = stepItem.s;
+                var m = hand.initState.money[hand.initState.seat[stepItem.place]]
+                    - stepItem.s;
+                tmpState.pot -= (stepItem.e - stepItem.s);
+
+                updateBetMoney(stepItem.place, m);
+                updateMoney(stepItem.place,
+                    tmpState.money[hand.initState.seat[stepItem.place]]);
+                updatePot(tmpState.pot);
+                break;
+            case "hand":
+                unWin(stepItem.place, stepItem.money);
+                break;
+            case "check":
+                break;
+
+            case "showdown":
+                updateBetMoney(stepItem.place, stepItem.s);
+                unShowdown(stepItem.place,
+                    hand.initState.cards[hand.initState.seat[stepItem.place]]);
+                break;
+
+            case "flop":
+                unShowflop(stepItem);
+                recoveryBetMoney(stepItem.money, hand.initState.people);
+                break;
+
+            case "turn":
+                unShowturn(stepItem);
+                recoveryBetMoney(stepItem.money, hand.initState.people);
+                break;
+
+            case "river":
+                unShowriver(stepItem);
+                recoveryBetMoney(stepItem.money, hand.initState.people);
+                break;
+
+            default:
+                console.log("unHandled cmd: " + stepItem.cmd);
+                break;
+        }
     }
 
 
