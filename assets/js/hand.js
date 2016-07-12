@@ -203,6 +203,9 @@ var handManager = (function() {
             index ++;
         }
 
+        for (var i in hand.allroles) {
+            hand.betmoney[hand.allroles[i]] = 0;
+        }
         hand.money = $.extend({}, hand.initState.money);
         hand.money["Big Blind"] -= hand.BB;
         hand.pot += hand.BB;
