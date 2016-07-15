@@ -40,8 +40,8 @@ $(function() {
 
     showCards();
 
-    handManager.readfilelist([
-        "/Users/jcx/Documents/data/bodogrecord/HH20160528-101735 - 4268525 - RING - $0.02-$0.05 - HOLDEM - NL - TBL No.10743295.txt"])
+    //handManager.readfilelist([
+    //    "/Users/jcx/Documents/data/bodogrecord/HH20160528-101735 - 4268525 - RING - $0.02-$0.05 - HOLDEM - NL - TBL No.10743295.txt"])
 
 });
 
